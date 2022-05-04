@@ -9,81 +9,148 @@ const $scissorsButton2 = document.querySelector(".button-scissors-player-2");
 const $fieldPlayer1 = document.querySelector(".field-player-1");
 const $fieldPlayer2 = document.querySelector(".field-player-2");
 
+const $winnerTitle = document.querySelector(".winner-title");
 
-const $winnerTitle = document.querySelector(".winner-title")
+const $scorePlayer1 = document.querySelector(".score-player-1");
+const $scorePlayer2 = document.querySelector(".score-player-2");
 
-let movePlayer1 = ''
-let movePlayer2 = ''
-let gameResult = null
+const $buttonReset = document.querySelector(".button-reset");
+const $buttonStart = document.querySelector(".button-start");
 
-function verifyGame(){
-  if (movePlayer1 == 'stone' && movePlayer2 == 'paper') {
-    gameResult = 2 
-  } else if (movePlayer1 == 'stone' && movePlayer2 == 'scissors') {
-    gameResult = 1
-  } else if (movePlayer1 == 'paper' && movePlayer2 == 'stone') {
-    gameResult = 1
-  } else if (movePlayer1 == 'paper' && movePlayer2 == 'scissors') {
-    gameResult = 2 
-  } else if (movePlayer1 == 'scissors' && movePlayer2 == 'stone') {
-    gameResult = 2
-  } else if (movePlayer1 == 'scissors' && movePlayer2 == 'paper') {
-    gameResult = 1
+let movePlayer1 = "";
+let movePlayer2 = "";
+let gameResult = null;
+let scorePlayer1 = 0;
+let scorePlayer2 = 0;
+let gameStart = false;
+
+function verifyGame() {
+  if (movePlayer1 == "stone" && movePlayer2 == "paper") {
+    gameResult = 2;
+  } else if (movePlayer1 == "stone" && movePlayer2 == "scissors") {
+    gameResult = 1;
+  } else if (movePlayer1 == "paper" && movePlayer2 == "stone") {
+    gameResult = 1;
+  } else if (movePlayer1 == "paper" && movePlayer2 == "scissors") {
+    gameResult = 2;
+  } else if (movePlayer1 == "scissors" && movePlayer2 == "stone") {
+    gameResult = 2;
+  } else if (movePlayer1 == "scissors" && movePlayer2 == "paper") {
+    gameResult = 1;
   } else if (movePlayer1 == movePlayer2) {
-    gameResult = 0
+    gameResult = 0;
   }
 }
 
-function printGameResult(){
+function printGameResult() {
   if (gameResult == 0) {
-    $winnerTitle.innerHTML = 'Empatou!'
+    $winnerTitle.innerHTML = "Empatou!";
   } else if (gameResult == 1) {
-    $winnerTitle.innerHTML = 'Jogadora 1 ganhou!'
+    $winnerTitle.innerHTML = "Jogadora 1 ganhou!";
   } else if (gameResult == 2) {
-    $winnerTitle.innerHTML = 'Jogadora 2 ganhou!'
+    $winnerTitle.innerHTML = "Jogadora 2 ganhou!";
   }
-} 
+}
 
-$stoneButton1.addEventListener("click", function(){
-  $fieldPlayer1.innerHTML = '<img class="move-image" src="stone.png"/>';
-  movePlayer1 = 'stone'
-  verifyGame()
-  printGameResult()
-})
+function resetBattleField() {
+  $fieldPlayer1.innerHTML = "";
+  $fieldPlayer2.innerHTML = "";
+}
 
-$paperButton1.addEventListener("click", function(){
-  $fieldPlayer1.innerHTML = '<img class="move-image" src="paper.png"/>';
-  movePlayer1 = 'paper'
-  verifyGame()
-  printGameResult()
-})
+function resetMoveVariables() {
+  movePlayer1 = "";
+  movePlayer2 = "";
+}
 
-$scissorsButton1.addEventListener("click", function(){
-  $fieldPlayer1.innerHTML = '<img class="move-image" src="scissors.png"/>';
-  movePlayer1 = 'scissors'
-  verifyGame()
-  printGameResult()
-})
+function printScoreboard() {
+  if (scorePlayer1 < 10) {
+    $scorePlayer1.innerHTML = "0" + scorePlayer1;
+  } else {
+    $scorePlayer1.innerHTML = scorePlayer1;
+  }
+  if (scorePlayer2 < 10) {
+    $scorePlayer2.innerHTML = "0" + scorePlayer2;
+  } else {
+    $scorePlayer2.innerHTML = scorePlayer2;
+  }
+}
 
+function addPoint(winnerNumber) {
+  if (winnerNumber == 1) {
+    scorePlayer1++;
+  }
+  if (winnerNumber == 2) {
+    scorePlayer2++;
+  }
+}
 
-$stoneButton2.addEventListener("click", function(){
-  $fieldPlayer2.innerHTML = '<img class="move-image" src="stone.png"/>';
-  movePlayer2 = 'stone'
-  verifyGame()
-  printGameResult()
-})
+function resetScoreboard() {
+  $scorePlayer1.innerHTML = "00";
+  $scorePlayer2.innerHTML = "00";
+}
 
-$paperButton2.addEventListener("click", function(){
-  $fieldPlayer2.innerHTML = '<img class="move-image" src="paper.png"/>';
-  movePlayer2 = 'paper'
-  verifyGame()
-  printGameResult()
-})
+function resetScoreVariables() {
+  scorePlayer1 = 0;
+  scorePlayer2 = 0;
+}
 
-$scissorsButton2.addEventListener("click", function(){
-  $fieldPlayer2.innerHTML = '<img class="move-image" src="scissors.png"/>';
-  movePlayer2 = 'scissors'
-  verifyGame()
-  printGameResult()
-})
+function move(moveName, fieldNumber) {
+  if (gameStart) {
+    if (fieldNumber == 1) {
+      $fieldPlayer1.innerHTML =
+        '<img class="move-image" src="' + moveName + '.png"/>';
+      movePlayer1 = moveName;
+    } else if (fieldNumber == 2) {
+      $fieldPlayer2.innerHTML =
+        '<img class="move-image" src="' + moveName + '.png"/>';
+      movePlayer2 = moveName;
+    }
+    verifyGame();
+    printGameResult();
+    if (gameResult != null) {
+      setTimeout(resetBattleField, 1000);
+      resetMoveVariables();
+      addPoint(gameResult);
+      printScoreboard();
+      gameResult = null;
+    }
+  }
+}
 
+$stoneButton1.addEventListener("click", function () {
+  move("stone", 1);
+});
+
+$paperButton1.addEventListener("click", function () {
+  move("paper", 1);
+});
+
+$scissorsButton1.addEventListener("click", function () {
+  move("scissors", 1);
+});
+
+$stoneButton2.addEventListener("click", function () {
+  move("stone", 2);
+});
+
+$paperButton2.addEventListener("click", function () {
+  move("paper", 2);
+});
+
+$scissorsButton2.addEventListener("click", function () {
+  move("scissors", 2);
+});
+
+$buttonReset.addEventListener("click", function () {
+  location.reload();
+});
+
+$buttonStart.addEventListener("click", function () {
+  gameStart = !gameStart;
+  $buttonStart.classList.toggle("start");
+  if (gameStart) {
+    $buttonStart.innerHTML = "Pausar";
+  } else {
+    $buttonStart.innerHTML = "iniciar"
+  }
+});

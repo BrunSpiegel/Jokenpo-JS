@@ -135,3 +135,7 @@ body {
 .field-player-2 img {
   transform: scalex(-1);
 }
+
+.start {
+  background-color: #106aa7;
+}
